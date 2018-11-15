@@ -17,7 +17,7 @@ void Transition(int *State, char Symbol, Stack *S,boolean *stuck);
 State terdefinisi 0,1,2,3. Symbol merupakan karakter yang sedang dibaca. S merupakan Stack yang digunakan. stuck bernilai true jika Symbol tidak valid
 */
 
-boolean PDA(char *str);
+boolean PDA(char *s);
 /* Validasi apakah string merupakan ekspresi matematika yang valid?
 I.S : str terdefinisi sebagai sebuah string
 F.S : jika str merupakan ekspresi matematika, output true. Jika tidak, output false
@@ -30,7 +30,7 @@ F.S         : Mengeluarkan hasil dari operasi matematika string tersebut
 Operasi yang ada (+,-,*,/,()) 
 */
 
-float NgitungKurung(char *s);
+float ParenthesesHandler(char *s);
 /* Algoritma khusus menghitung operasi dalam kurung
 Prekondisi  : Sintaks merupakan operasi dalam kurung
 F.S         : Menghasilkan hasil operasi dalam kurung
