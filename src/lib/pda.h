@@ -23,7 +23,7 @@ I.S : str terdefinisi sebagai sebuah string
 F.S : jika str merupakan ekspresi matematika, output true. Jika tidak, output false
 */
 
-float NgitungString(char *s);
+float StringHandler(char *s);
 /* Menghitung operasi matematika dari string yang diinputkan
 Prekondisi  : Sintaks string harus benar
 F.S         : Mengeluarkan hasil dari operasi matematika string tersebut
