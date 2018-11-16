@@ -1,5 +1,5 @@
-#ifndef stackt_H
-#define stackt_H
+#ifndef stack_H
+#define stack_H
 
 #include "boolean.h"
 #include <stdio.h>

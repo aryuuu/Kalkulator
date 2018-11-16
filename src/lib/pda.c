@@ -19,7 +19,7 @@ float StringToFloat(char *s){
 
 		int	temp = *s - '0'; //menampung hasil konversi karaker ke bilangan
 
-		if(temp >= 0 && d <= 9){
+		if(temp >= 0 && temp <= 9){
 			if(point){
 				SignDec = SignDec *10; //menghitung jumlah digit di belakang koma
 									   //dimana jumlah digit di belakang koma = log(abs(SignDec)
@@ -62,7 +62,7 @@ void Transition(int *State, char Symbol, Stack *S,boolean *stuck){
 						break;
 					}
 				default :
-					stuck = true;
+					*stuck = true;
 
 			}
 			break;
@@ -108,6 +108,7 @@ void Transition(int *State, char Symbol, Stack *S,boolean *stuck){
 						*State = 2;
 						break;
 					}
+				case '^':
 				case '*':
 				case '/':
 				case '+':
@@ -193,6 +194,7 @@ float StringHandler(char *s){
 	int idxc = 0;
 	int idx = 0;
 	int count;
+	boolean OneElmt;
 
 	while(*s != '\0'){
 		if(*s == '('){
@@ -326,7 +328,7 @@ float ParenthesesHandler(char *s){
 			if(idxc != 0){
 				idxc--;
 				while(idxc >= 0){
-					flt[idxc] = '\0'
+					flt[idxc] = '\0';
 					idxc--;
 				}
 				idxc = 0;
@@ -340,7 +342,7 @@ float ParenthesesHandler(char *s){
 			}
 			count = 1; //merupakan jumlah ')' yang dibutuhkan 
 			s++;
-			while (hit != 0){
+			while (count != 0){
 				if(*s == ')'){
 					count--;
 				} else if(*s == '('){

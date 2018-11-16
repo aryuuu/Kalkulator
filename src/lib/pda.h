@@ -1,9 +1,9 @@
-#ifndef
+#ifndef pdacalculator_H
 #define pdacalculator_H
 
 #include "boolean.h"
 #include "string.h"
-#include "stackt.h"
+#include "stack.h"
 #include <stdio.h>
 
 float StringToFloat(char *s);

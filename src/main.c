@@ -6,11 +6,15 @@ int main(){
 	char input[1000];
 
 	// fgets(input, 1000, stdin);
-	scanf("%s", &input);
+	scanf("%s", input);
 
 	if(PDA(input)){
 		float result = StringHandler(input);
-		printf("%.2f\n", result);
+		if(result != result){
+			printf("Math Error\n");
+		} else {
+			printf("%.2f\n", result);
+		}
 	} else {
 		printf("Syntax Error\n");
 	}
