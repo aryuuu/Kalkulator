@@ -287,14 +287,14 @@ void proc_string(char *s, boolean *error, float *res){
 					
 					count = 1;
 					s++;
-					/* while(count != 0){
+					while(count != 0){
 						if(*s == '('){
 							count++;
 						} else if(*s == ')'){
 							count--;
 						}
 						s++;
-					} */
+					} 
 				} 
 				else {
 					if(idxa != 0){
