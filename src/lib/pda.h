@@ -6,7 +6,7 @@
 #include "stack.h"
 #include <stdio.h>
 
-float StringToFloat(char *s);
+float StringTofloat(char *s);
 /* Mengubah string dari sebuah bilangan ke bentuk float
 I.S : s terdefinisi sebagai sebuah string berbentuk bilangan dan tidak kosong,
 minimal adalah 2 karakter untuk bilangan negatif dan 1 karakter untuk bil. positif
