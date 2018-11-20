@@ -204,7 +204,7 @@ float StringHandler(char *s){
 	int idxpow = 0;
 	int idx = 0;
 	int count;
-	boolean OneElmt;
+	boolean OneElmt = true;
 	boolean preopt;
 	boolean firstopt = true;
 	boolean multiplied = false;
