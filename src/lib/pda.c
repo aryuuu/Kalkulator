@@ -1,6 +1,7 @@
 #include "pda.h"
 #include "boolean.h"
 #include <math.h>
+#include <stdio.h>
 
 float StringTofloat(char *s){
 	float result = 0;
@@ -33,7 +34,7 @@ float StringTofloat(char *s){
 	return result / SignDec;
 }
 
-void Transition(int *State, char Symbol, Stack *S,boolean *stuck){
+void trans_state(int *State, char Symbol, Stack *S,boolean *stuck){
 	infotype temp;
 
 	switch (*State){
@@ -177,7 +178,7 @@ boolean PDA(char *s){
 
 	while(*s){
 		if(*s != '\n' && !stuck){
-			Transition(&state, *s, &S, &stuck);
+			trans_state(&state, *s, &S, &stuck);
 		}
 		s++;
 	}
@@ -190,11 +191,11 @@ boolean PDA(char *s){
 }
 
 
-float StringHandler(char *s){
+void proc_string(char *s, boolean *error, float *res){
 	float result;
 	float temp[50];
 	float f;
-	float pows[50];
+	float tempres;
 	char flt[50];
 	char *temps;
 	char operand[50];
@@ -206,16 +207,22 @@ float StringHandler(char *s){
 	int count;
 	boolean OneElmt = true;
 	boolean preopt;
+	boolean Minus = false;
 	boolean firstopt = true;
 	boolean multiplied = false;
+	*error = false;
 
-	while(*s != '\0'){
+	while((*s != '\0') && !*error){
 		if(*s == '('){
 			//meng-handle adanya parentheses
-			temp[idx] = ParenthesesHandler(s); //mengembalikan angka/ekspresi yang ada di parentheses
+			proc_parentheses(s, error, &tempres);
+			if(*error){
+				break;
+			}
+			else {temp[idx] = tempres; printf("parenth res %f\n", temp[idx]);} //mengembalikan angka/ekspresi yang ada di parentheses
+
 			count = 1;
 			s++;
-
 			while(count != 0){
 				//melanjutkan pembacaan sampai akhir kurung
 				if(*s == ')'){
@@ -224,10 +231,18 @@ float StringHandler(char *s){
 					count++;
 				}
 				s++;
-			}
-		} 
+			} 
+/*  			proc_in_parentheses(s, error, temp);
+				s = temps;
+ */		} 
 		else {
 			//menangani bila yang muncul langsung angka
+			if(*s == '-'){ 
+				flt[idxc] = *s;
+				idxc++;
+				s++;
+				Minus = true;
+			}
 			if(idxa != 0){
 				//mengosongkan array flt yang akan diisi angka
 				idxa--;
@@ -244,7 +259,10 @@ float StringHandler(char *s){
 				s++;
 			}
 			temp[idx] = StringTofloat(flt);//mengubah isi array flt menjadi float
+			if(Minus) temp[idx] *= -1;
+			printf("temp[%d] %f\n", idx, temp[idx]);
 		}
+
 		if(*s != '\0'){
 			//menangani munculnya operator
 			if (firstopt){
@@ -261,18 +279,22 @@ float StringHandler(char *s){
 				s++;
 				if(*s == '('){
 					//conditional buat menangani kurung
-					f = ParenthesesHandler(s);
+					proc_parentheses(s, error, &tempres);
+					if(*error){
+						break;
+					}
+					else {f= tempres; printf("parenth res %f\n", temp[idx]);}
+					
 					count = 1;
 					s++;
-
-					while(count != 0){
+					/* while(count != 0){
 						if(*s == '('){
 							count++;
 						} else if(*s == ')'){
 							count--;
 						}
 						s++;
-					}
+					} */
 				} 
 				else {
 					if(idxa != 0){
@@ -294,15 +316,25 @@ float StringHandler(char *s){
 				}
 
 				if(opt == '^'){
-					idx++;
-					temp[idx] = f;
-					idxpow++;
+					if((temp[idx] < 0) && (f < 1)){ //bilangan negatif dipangkat dengan bilangan kurang dari 1
+						*error = true;
+						break;
+					}
+					else{
+						idx++;
+						temp[idx] = f;
+						idxpow++;
+					}
 				}
 				else if(opt == '*'){
 					temp[idx] *= f;
 				} 
 				else if(opt == '/'){
-					temp[idx] /= f;
+					if(f == 0){
+						*error = true;
+						break;
+					} 
+					else temp[idx] /= f;
 				}
 				
 				preopt = opt;
@@ -325,8 +357,8 @@ float StringHandler(char *s){
 			}
 
 			if((preopt == '^') && (opt != '^') && (idxpow != 0)){
-				/* printf("inloop 2\n");
-				printf("idxpow %d\n", idxpow); */
+				printf("inloop 2\n");
+				printf("idxpow %d\n", idxpow);
 				for (int k = 0; k < idxpow; k++){
 					idx--;
 					temp[idx] = pow(temp[idx], temp[idx+1]);
@@ -377,14 +409,15 @@ float StringHandler(char *s){
 			}
 		}
 	}
-	return result;
+	*res = result;
 }
 
 
-float ParenthesesHandler(char *s){
+float proc_parentheses(char *s, boolean *error, float *res){
 	float tabfl[50];
 	float result = 0;
 	float temp;
+	float tempres;
 	char flt[50];
 	char operand[50];
 	char opt;
@@ -400,6 +433,7 @@ float ParenthesesHandler(char *s){
 	boolean FirstElmt = true;
 	boolean firstopt = false;
 	boolean multiplied = false;
+	*error = false;
 
 	s++;
 	if(*s == '-'){ 
@@ -422,7 +456,13 @@ float ParenthesesHandler(char *s){
 		}
 
 		if(*s == '('){
-			tabfl[idx] = ParenthesesHandler(s);
+			proc_parentheses(s, error, &tempres);
+			if(*error){
+				break;
+			}
+			else tabfl[idx] = tempres; 
+			printf("tabfl[%d] %f\n", idx, tabfl[idx]);
+			
 			if(Minus){
 				tabfl[idx] *= -1;
 			}
@@ -437,13 +477,16 @@ float ParenthesesHandler(char *s){
 				s++;
 
 			}			
-		} else {
+		} 
+		else {
 			while((*s != ')') && (*s != '*') && (*s != '/') && (*s != '+') && (*s != '-') && (*s != '^')){
 				flt[idxc] = *s;
 				idxc++;
 				s++;
  			}
  			tabfl[idx] = StringTofloat(flt);
+			printf("tabfl[%d] %f\n", idx, tabfl[idx]);
+
 		}
 
 		FirstElmt = false;
@@ -457,10 +500,16 @@ float ParenthesesHandler(char *s){
 
 			opt = *s;
 			while(opt == '*' || opt == '/' || (opt == '^')){
+				if(idxa == 0) OneElmt = true;
 				multiplied = true;
 				s++;
 				if(*s == '('){
-					temp = ParenthesesHandler(s);
+					proc_parentheses(s, error, &tempres);
+					if(*error){
+						break;
+					}
+					else temp = tempres; 
+
 					count = 1;
 					s++;
 					while(count != 0){
@@ -489,38 +538,51 @@ float ParenthesesHandler(char *s){
 				}
 
 				if(opt == '^'){
-					idx++;
-					tabfl[idx] = temp;
-					idxpow++;
+					if((tabfl[idx] < 0) && (temp < 1)){
+						*error = true;
+						break;
+					}
+					else{
+						idx++;
+						tabfl[idx] = temp;
+						idxpow++;
+					}
 				}
 				else if(opt == '*'){
 					tabfl[idx] *= temp;
 				} 
 				else if(opt == '/'){
-					tabfl[idx] /= temp;
+					if(temp == 0){
+						*error = true;
+						break;
+					}
+					else{
+						tabfl[idx] /= temp;
+					}
 				}
 				preopt = opt;
 				opt = *s;
 
 				if((preopt == '^') && (opt != '^') && (idxpow != 0)){
-					/* printf("inloop 1\n");
-					printf("idxpow %d\n", idxpow); */
+					printf("inloop 1\n");
+					printf("idxpow %d\n", idxpow);
 					for (int k = 0; k < idxpow; k++){
 						idx--;
 						tabfl[idx] = pow(tabfl[idx], tabfl[idx+1]);
-						/* printf("tabfl[%d] %f\n", idx, tabfl[idx]); */
+						printf("tabfl[%d] %f\n", idx, tabfl[idx]);
 					}
 					idxpow = 0;
 				}
 			}
 
+			//pemrosesan pangkat(diulang)
 			if((preopt == '^') && (opt != '^') && (idxpow != 0)){
-					/* printf("inloop 1\n");
-					printf("idxpow %d\n", idxpow); */
+					printf("inloop 2\n");
+					printf("idxpow %d\n", idxpow);
 					for (int k = 0; k < idxpow; k++){
 						idx--;
 						tabfl[idx] = pow(tabfl[idx], tabfl[idx+1]);
-						/* printf("tabfl[%d] %f\n", idx, tabfl[idx]); */
+						printf("tabfl[%d] %f\n", idx, tabfl[idx]);
 					}
 					idxpow = 0;
 				}
@@ -538,15 +600,19 @@ float ParenthesesHandler(char *s){
 
 	if(OneElmt){
 		result = tabfl[0];
+		printf("case 1 idx%d\n", idx); 
+		printf("result %f\n", result);
+		
 	} else {
-		if(multiplied) idx--;
-		/* printf("%d\n", idx); */
+		/* if(multiplied) idx--; */
+		//pemrosesan tab(diulang)
+		printf("case 2 idx%d\n", idx); 
 		result = 0;
-		for(int i = 0; i <= idx; i++){
+		for(int i = 0; i < idx; i++){
 			if(i == 0){
-				/* printf("sumloop\n");
+				printf("sumloop\n");
 				printf("tabfl[%d] %f\n", i, tabfl[i]);
-				printf("tabfl[%d] %f\n", i+1, tabfl[i+1]); */
+				printf("tabfl[%d] %f\n", i+1, tabfl[i+1]);
 				if(operand[i] == '+'){
 					result = result + tabfl[i] + tabfl[i+1];
 				} else if (operand[i] == '-'){
@@ -560,9 +626,10 @@ float ParenthesesHandler(char *s){
 					result = result - tabfl[i+1];
 				}
 			}
+			printf("result %d %f\n", i, result);
 		}
 	}
-
-	return result;
+	
+	*res = result;
 }
 
