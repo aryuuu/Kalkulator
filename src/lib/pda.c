@@ -42,7 +42,7 @@ void Transition(int *State, char Symbol, Stack *S,boolean *stuck){
 						Push(S,'X');
 						break;
 					}
-
+				case '0':
 				case '1':
 				case '2':
 				case '3':
@@ -75,6 +75,7 @@ void Transition(int *State, char Symbol, Stack *S,boolean *stuck){
 						*State = 0;
 						break;
 					}
+				case '0':
 				case '1':
 				case '2':
 				case '3':
@@ -132,6 +133,7 @@ void Transition(int *State, char Symbol, Stack *S,boolean *stuck){
 
 		case 3:
 			switch (Symbol){
+				case '0':
 				case '1':
 				case '2':
 				case '3':
