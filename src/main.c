@@ -23,7 +23,7 @@ int main()
 			else 
 			{
 				printf("-> ");
-				printf("%.2f\n\n", StringHandler(input));
+				printf("%.2f\n\n", result);
 			}
 		} 
 		else if (strcmp(input,"EXIT") != 0)
