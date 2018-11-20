@@ -72,6 +72,7 @@ void Transition(int *State, char Symbol, Stack *S,boolean *stuck){
 				case '(':
 					if(InfoTop(*S) == 'X' || InfoTop(*S) == 'Z'){
 						Push(S,'X');
+						*State = 0;
 						break;
 					}
 				case '1':
@@ -104,6 +105,7 @@ void Transition(int *State, char Symbol, Stack *S,boolean *stuck){
 				case '7':
 				case '8':
 				case '9':
+				case '.':	
 					if(InfoTop(*S) == 'X' || InfoTop(*S) == 'Z'){
 						*State = 2;
 						break;
