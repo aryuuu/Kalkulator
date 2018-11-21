@@ -1,7 +1,7 @@
-#include "pda.h"
+#include "lib/pda.h"
 #include <stdio.h>
 #include <string.h>
-#include "stack.h"
+#include "lib/stack.h"
 
 int main(){
 	Stack S;
