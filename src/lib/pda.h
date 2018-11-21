@@ -23,6 +23,7 @@ I.S : str terdefinisi sebagai sebuah string
 F.S : jika str merupakan ekspresi matematika, output true. Jika tidak, output false
 */
 
+void proc_in_parentheses(char **s, boolean *error, float temp[], int idx);
 
 void proc_string(char *s, boolean *error, float *res);
 /* Menghitung operasi matematika dari string yang diinputkan
