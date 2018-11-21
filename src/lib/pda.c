@@ -225,11 +225,12 @@ void proc_string(char *s, boolean *error, float *res){
 	boolean Minus = false;
 	boolean firstopt = true;
 	boolean multiplied = false;
+	boolean firstelmt = true;
 	*error = false;
 
 	while((*s != '\0') && !*error){
 		if(*s == '('){
-			 
+			firstelmt = false; 
 			temps = s;
  			proc_in_parentheses(&temps, error, temp, idx);
 			if(*error) break;
@@ -250,11 +251,12 @@ void proc_string(char *s, boolean *error, float *res){
 		} 
 		else {
 			//menangani bila yang muncul langsung angka
-			if(*s == '-'){ 
-				flt[idxc] = *s;
-				idxc++;
+			if((*s == '-') && firstelmt){ 
+				flt[idxa] = *s;
+				idxa++;
 				s++;
 				Minus = true;
+				firstelmt = false;
 			}
 			if(idxa != 0){
 				//mengosongkan array flt yang akan diisi angka
@@ -311,7 +313,7 @@ void proc_string(char *s, boolean *error, float *res){
 					}
 				} 
 				else {
-					//menangani angka
+					//menangani angka	
 					if(idxa != 0){
 						//loop buat mengosongkan array flt yang dipake buat menyimpan angka
 						idxa--;
@@ -559,7 +561,7 @@ float proc_parentheses(char *s, boolean *error, float *res){
 				}
 
 				if(opt == '^'){
-					if((tabfl[idx] < 0) && (temp < 1)){
+					if((tabfl[idx] < 0) && ((temp < 1) && (temp > 0))){
 						*error = true;
 						break;
 					}
