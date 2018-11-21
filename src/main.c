@@ -1,24 +1,24 @@
+#include "pda.h"
 #include <stdio.h>
 #include <string.h>
-#include "lib/pda.c"
-#include "lib/stack.c"
+#include "stack.h"
 
-int main()
-{
-	// Stack S;
+int main(){
+	Stack S;
 	char input[1000];
+	boolean matherr;
+	float result;
 
-	// fgets(input, 1000, stdin);
 	printf("Ketik EXIT untuk keluar program\n\n"); 
 	do
 	{
 		scanf("%s",input);
 		if (PDA(input))
 		{
-			float result = StringHandler(input);
-			if(result != result)
+			proc_string(input, &matherr, &result);
+			if(matherr)
 			{
-				printf("Math Error\n");
+				printf("Math Error\n\n");
 			} 
 			else 
 			{
@@ -32,4 +32,7 @@ int main()
 		}
 	}
 	while (strcmp(input,"EXIT") != 0);
+
 }
+
+
